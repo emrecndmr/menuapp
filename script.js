@@ -61,8 +61,10 @@ class YemekPlanlamaUygulamasi {
     }
 
     async init() {
-        await this.tarifleriYukle();
+        this.kategorileriDoldur();
+        this.malzemeEkleButonuAyarla();
         this.eventListenerlariniEkle();
+        await this.tarifleriYukle();
     }
 
     async tarifleriYukle() {
@@ -103,37 +105,134 @@ class YemekPlanlamaUygulamasi {
         }
     }
 
+    kategorileriDoldur() {
+        const kategoriler = Object.values(KATEGORILER);
+        const kategoriSelect = document.getElementById('tarif-kategori');
+        const kategoriFiltre = document.getElementById('kategori-filtre');
+
+        kategoriler.forEach(kategori => {
+            // Yeni tarif formundaki kategori seçenekleri
+            const option1 = document.createElement('option');
+            option1.value = kategori;
+            option1.textContent = kategori;
+            kategoriSelect.appendChild(option1);
+
+            // Filtreleme için kategori seçenekleri
+            const option2 = document.createElement('option');
+            option2.value = kategori;
+            option2.textContent = kategori;
+            kategoriFiltre.appendChild(option2);
+        });
+    }
+
+    malzemeEkleButonuAyarla() {
+        const malzemeEkleBtn = document.getElementById('malzeme-ekle');
+        const malzemelerListesi = document.getElementById('malzemeler-listesi');
+
+        malzemeEkleBtn.addEventListener('click', () => {
+            const yeniMalzeme = document.createElement('div');
+            yeniMalzeme.className = 'malzeme-girisi';
+            yeniMalzeme.innerHTML = `
+                <input type="text" placeholder="Malzeme" required>
+                <input type="text" placeholder="Miktar" required>
+                <button type="button" class="malzeme-sil">Sil</button>
+            `;
+            malzemelerListesi.appendChild(yeniMalzeme);
+
+            // Silme butonu için event listener
+            yeniMalzeme.querySelector('.malzeme-sil').addEventListener('click', () => {
+                yeniMalzeme.remove();
+            });
+        });
+
+        // İlk malzeme girişi için silme butonu
+        const ilkMalzemeSil = document.querySelector('.malzeme-sil');
+        if (ilkMalzemeSil) {
+            ilkMalzemeSil.addEventListener('click', (e) => {
+                if (document.querySelectorAll('.malzeme-girisi').length > 1) {
+                    e.target.closest('.malzeme-girisi').remove();
+                }
+            });
+        }
+    }
+
     eventListenerlariniEkle() {
-        // Modal açma/kapama
+        // Modal işlemleri
         const modal = document.getElementById('tarif-modal');
         const yeniTarifBtn = document.getElementById('yeni-tarif-ekle');
         const kapatBtn = document.querySelector('.close');
         const menuToggle = document.getElementById('menu-toggle');
         const nav = document.getElementById('main-nav');
 
-        yeniTarifBtn.onclick = () => modal.style.display = 'block';
-        kapatBtn.onclick = () => modal.style.display = 'none';
-        menuToggle.onclick = () => nav.classList.toggle('active');
+        yeniTarifBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        kapatBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+        // Modal dışına tıklandığında kapatma
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
 
         // Form gönderimi
-        document.getElementById('yeni-tarif-form').onsubmit = async (e) => {
+        const form = document.getElementById('yeni-tarif-form');
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            
             const tarifData = {
-                isim: formData.get('tarif-isim'),
-                kategori: formData.get('tarif-kategori'),
-                zorluk: formData.get('tarif-zorluk'),
-                hazirlamaSuresi: parseInt(formData.get('tarif-sure')),
+                isim: document.getElementById('tarif-isim').value,
+                kategori: document.getElementById('tarif-kategori').value,
+                zorluk: document.getElementById('tarif-zorluk').value,
+                hazirlamaSuresi: parseInt(document.getElementById('tarif-sure').value),
                 malzemeler: this.malzemeleriTopla(),
-                talimatlar: formData.get('tarif-talimatlar')
+                talimatlar: document.getElementById('tarif-talimatlar').value,
+                puan: 0,
+                denenmis: false
             };
 
-            const resimDosyasi = formData.get('tarif-resim');
-            if (await this.tarifKaydet(tarifData, resimDosyasi)) {
-                modal.style.display = 'none';
-                e.target.reset();
+            const resimDosyasi = document.getElementById('tarif-resim').files[0];
+
+            try {
+                if (await this.tarifKaydet(tarifData, resimDosyasi)) {
+                    modal.style.display = 'none';
+                    form.reset();
+                    alert('Tarif başarıyla kaydedildi!');
+                }
+            } catch (error) {
+                console.error('Tarif kaydedilirken hata:', error);
+                alert('Tarif kaydedilirken bir hata oluştu!');
             }
+        });
+
+        // Filtreleme işlemleri
+        const kategoriFiltre = document.getElementById('kategori-filtre');
+        const zorlukFiltre = document.getElementById('zorluk-filtre');
+        const minPuanFiltre = document.getElementById('min-puan');
+        const denenmisFiltre = document.getElementById('denenmis-filtre');
+
+        const filtrelemeYap = () => {
+            const filtrelenmisler = this.tarifleriFiltrele(
+                kategoriFiltre.value,
+                zorlukFiltre.value,
+                minPuanFiltre.value ? parseFloat(minPuanFiltre.value) : null,
+                denenmisFiltre.checked
+            );
+            this.tarifleriGoster(filtrelenmisler);
         };
+
+        kategoriFiltre.addEventListener('change', filtrelemeYap);
+        zorlukFiltre.addEventListener('change', filtrelemeYap);
+        minPuanFiltre.addEventListener('input', filtrelemeYap);
+        denenmisFiltre.addEventListener('change', filtrelemeYap);
     }
 
     malzemeleriTopla() {
@@ -148,9 +247,13 @@ class YemekPlanlamaUygulamasi {
         return malzemeler;
     }
 
-    tarifleriGoster() {
+    tarifleriGoster(tarifler = this.tarifler) {
         const container = document.getElementById('tarif-listesi');
-        container.innerHTML = this.tarifler.map(tarif => this.tarifKartiOlustur(tarif)).join('');
+        if (!container) return;
+
+        container.innerHTML = tarifler.length > 0 
+            ? tarifler.map(tarif => this.tarifKartiOlustur(tarif)).join('')
+            : '<p class="bos-mesaj">Henüz tarif eklenmemiş.</p>';
     }
 
     tarifKartiOlustur(tarif) {
@@ -217,7 +320,7 @@ class YemekPlanlamaUygulamasi {
     }
 }
 
-// Örnek kullanım
+// Uygulamayı başlat
 const uygulama = new YemekPlanlamaUygulamasi();
 
 // Örnek tarif ekleme
