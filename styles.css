@@ -217,3 +217,65 @@ form input, form select, form textarea {
     padding: 10px 15px;
     background: var(--background-color);
 }
+
+.bos-mesaj {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.nav-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #3dbdb4;
+}
+
+.malzeme-sil {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.malzeme-sil:hover {
+    background-color: #ff6b81;
+}
+
+#malzeme-ekle {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+#malzeme-ekle:hover {
+    background-color: #3dbdb4;
+}
+
+form button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+form button[type="submit"]:hover {
+    background-color: #ff5252;
+}
