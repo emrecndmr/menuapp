@@ -1,7 +1,9 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 import { getStorage } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
+// Firebase yapılandırması
 const firebaseConfig = {
   apiKey: "AIzaSyCPL64oakcr8bpie869fjtk2YawpzNH7JY",
   authDomain: "menuapp-d4fa3.firebaseapp.com",
@@ -17,5 +19,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app);
+const analytics = getAnalytics(app);
 
-export { database, storage }; 
+export { app, database, storage, analytics }; 
