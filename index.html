@@ -6,6 +6,15 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Yemek Planlama Uygulaması</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase CDN'leri -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getStorage } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+    </script>
+    
+    <!-- Uygulama Scriptleri -->
     <script type="module" src="firebase.js"></script>
     <script type="module" src="script.js"></script>
 </head>
