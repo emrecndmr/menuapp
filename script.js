@@ -72,15 +72,27 @@ class YemekPlanlamaUygulamasi {
         try {
             let resimUrl = '';
             if (resimDosyasi) {
-                const resimRef = storageRef(storage, `tarif-resimleri/${Date.now()}_${resimDosyasi.name}`);
-                const metadata = {
-                    contentType: resimDosyasi.type,
-                    customMetadata: {
-                        'Access-Control-Allow-Origin': '*'
+                // ImgBB API'sine resim yükleme
+                const formData = new FormData();
+                formData.append('image', resimDosyasi);
+                // ImgBB API key'inizi buraya ekleyin
+                formData.append('key', 'f43945db52a1dd61eee9849e20e154f6');
+
+                try {
+                    const response = await fetch('https://api.imgbb.com/1/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        resimUrl = data.data.url;
+                    } else {
+                        console.error('Resim yükleme başarısız:', data);
                     }
-                };
-                await uploadBytes(resimRef, resimDosyasi, metadata);
-                resimUrl = await getDownloadURL(resimRef);
+                } catch (uploadError) {
+                    console.error('Resim yükleme hatası:', uploadError);
+                }
             }
 
             const yeniTarif = {
