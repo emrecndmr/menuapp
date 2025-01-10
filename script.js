@@ -1,6 +1,6 @@
+import { app, database, storage, analytics } from './firebase.js';
 import { ref, set, push, onValue, remove, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
-import { database, storage } from './firebase.js';
 
 // Temel veri yapıları
 class Tarif {
@@ -73,7 +73,13 @@ class YemekPlanlamaUygulamasi {
             let resimUrl = '';
             if (resimDosyasi) {
                 const resimRef = storageRef(storage, `tarif-resimleri/${Date.now()}_${resimDosyasi.name}`);
-                await uploadBytes(resimRef, resimDosyasi);
+                const metadata = {
+                    contentType: resimDosyasi.type,
+                    customMetadata: {
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                };
+                await uploadBytes(resimRef, resimDosyasi, metadata);
                 resimUrl = await getDownloadURL(resimRef);
             }
 
