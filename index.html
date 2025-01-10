@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com; img-src 'self' https://* data: blob:; script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com;">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com https://*.gstatic.com;
+        img-src 'self' https://* data: blob:;
+        script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com https://*.gstatic.com;
+        style-src 'self' 'unsafe-inline';
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com https://*.gstatic.com;
+        font-src 'self' https://fonts.gstatic.com;
+    ">
     <title>Yemek Planlama Uygulaması</title>
     <link rel="stylesheet" href="styles.css">
     
@@ -12,6 +19,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
         import { getStorage } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
     </script>
     
     <!-- Uygulama Scriptleri -->
