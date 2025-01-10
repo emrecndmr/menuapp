@@ -316,3 +316,66 @@ form button[type="submit"]:hover {
     align-items: center;
     padding: 1rem;
 }
+
+.tarif-detay {
+    padding: 20px;
+}
+
+.tarif-detay-resim {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.tarif-bilgi {
+    margin: 15px 0;
+    padding: 15px;
+    background: var(--background-color);
+    border-radius: 8px;
+}
+
+.tarif-malzemeler, .tarif-talimatlar {
+    margin: 15px 0;
+}
+
+.tarif-malzemeler ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tarif-malzemeler li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.tarif-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.edit-button, .delete-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.edit-button {
+    background-color: var(--secondary-color);
+}
+
+.delete-button {
+    background-color: #ff4757;
+}
+
+.edit-button:hover {
+    background-color: #3dbdb4;
+}
+
+.delete-button:hover {
+    background-color: #ff6b81;
+}
