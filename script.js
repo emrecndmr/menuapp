@@ -1,6 +1,5 @@
-import { app, database, storage, analytics } from './firebase.js';
+import { app, database, analytics } from './firebase.js';
 import { ref, set, push, onValue, remove, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
 
 // Temel veri yapıları
 class Tarif {
@@ -75,7 +74,6 @@ class YemekPlanlamaUygulamasi {
                 // ImgBB API'sine resim yükleme
                 const formData = new FormData();
                 formData.append('image', resimDosyasi);
-                // ImgBB API key'inizi buraya ekleyin
                 formData.append('key', 'f43945db52a1dd61eee9849e20e154f6');
 
                 try {
