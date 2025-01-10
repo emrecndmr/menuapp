@@ -1,6 +1,6 @@
+import { ref, set, push, onValue, remove, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
 import { database, storage } from './firebase.js';
-import { ref, set, push, onValue, remove, update } from 'firebase/database';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Temel veri yapıları
 class Tarif {
