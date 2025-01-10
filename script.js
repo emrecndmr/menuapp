@@ -303,12 +303,15 @@ class YemekPlanlamaUygulamasi {
     }
 
     async tarifSil(tarifId) {
-        try {
-            await this.tariflerRef.child(tarifId).remove();
-            return true;
-        } catch (error) {
-            console.error('Tarif silinirken hata:', error);
-            return false;
+        if (confirm('Bu tarifi silmek istediğinizden emin misiniz?')) {
+            try {
+                await remove(ref(database, `tarifler/${tarifId}`));
+                alert('Tarif başarıyla silindi!');
+                document.getElementById('tarif-modal').style.display = 'none';
+            } catch (error) {
+                console.error('Tarif silinirken hata:', error);
+                alert('Tarif silinirken bir hata oluştu!');
+            }
         }
     }
 
@@ -320,6 +323,57 @@ class YemekPlanlamaUygulamasi {
             console.error('Tarif güncellenirken hata:', error);
             return false;
         }
+    }
+
+    async tarifDetayGoster(tarifId) {
+        const tarif = this.tarifler.find(t => t.id === tarifId);
+        if (!tarif) return;
+
+        // Mevcut modalı temizle ve yeni içerik ekle
+        const modal = document.getElementById('tarif-modal');
+        const modalContent = modal.querySelector('.modal-content');
+        
+        modalContent.innerHTML = `
+            <span class="close">&times;</span>
+            <div class="tarif-detay">
+                <h2>${tarif.isim}</h2>
+                ${tarif.resimUrl ? `<img src="${tarif.resimUrl}" alt="${tarif.isim}" class="tarif-detay-resim">` : ''}
+                <div class="tarif-bilgi">
+                    <p><strong>Kategori:</strong> ${tarif.kategori}</p>
+                    <p><strong>Zorluk:</strong> ${tarif.zorluk}</p>
+                    <p><strong>Hazırlama Süresi:</strong> ${tarif.hazirlamaSuresi} dk</p>
+                    <p><strong>Puan:</strong> ${tarif.puan || 'Henüz puanlanmamış'}</p>
+                </div>
+                <div class="tarif-malzemeler">
+                    <h3>Malzemeler</h3>
+                    <ul>
+                        ${tarif.malzemeler.map(m => `
+                            <li>${m.malzeme} - ${m.miktar}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="tarif-talimatlar">
+                    <h3>Hazırlanışı</h3>
+                    <p>${tarif.talimatlar}</p>
+                </div>
+                <div class="tarif-actions">
+                    <button onclick="uygulama.tarifDuzenle('${tarifId}')" class="edit-button">Düzenle</button>
+                    <button onclick="uygulama.tarifSil('${tarifId}')" class="delete-button">Sil</button>
+                </div>
+            </div>
+        `;
+
+        // Modal kapatma işlevini yeniden ekle
+        const closeBtn = modalContent.querySelector('.close');
+        closeBtn.onclick = () => modal.style.display = 'none';
+
+        // Modalı göster
+        modal.style.display = 'block';
+    }
+
+    async tarifDuzenle(tarifId) {
+        // Bu fonksiyon daha sonra eklenecek
+        console.log('Tarif düzenleme:', tarifId);
     }
 }
 
