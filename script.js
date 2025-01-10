@@ -1,4 +1,4 @@
-import { database as db, storage } from './firebase.js';
+import { database, storage } from './firebase.js';
 import { ref, set, push, onValue, remove, update } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -17,14 +17,6 @@ class Tarif {
     }
 }
 
-class Menu {
-    constructor(id, isim) {
-        this.id = id;
-        this.isim = isim;
-        this.tarifler = [];
-    }
-}
-
 // Kategori sabitleri
 const KATEGORILER = {
     KAHVALTI: 'Kahvaltı',
@@ -37,10 +29,6 @@ const KATEGORILER = {
     ICECEK: 'İçecek',
     FAST_FOOD: 'Fast Food'
 };
-
-// Firebase referanslarını al
-const db = window.firebaseDatabase;
-const storage = window.firebaseStorage;
 
 // Uygulama yönetimi
 class YemekPlanlamaUygulamasi {
@@ -56,8 +44,7 @@ class YemekPlanlamaUygulamasi {
             cumartesi: { kahvalti: null, ogle: null, aksam: null },
             pazar: { kahvalti: null, ogle: null, aksam: null }
         };
-        this.tariflerRef = ref(db, 'tarifler');
-        this.init();
+        this.tariflerRef = ref(database, 'tarifler');
     }
 
     async init() {
@@ -68,7 +55,7 @@ class YemekPlanlamaUygulamasi {
     }
 
     async tarifleriYukle() {
-        this.tariflerRef.on('value', (snapshot) => {
+        onValue(this.tariflerRef, (snapshot) => {
             this.tarifler = [];
             snapshot.forEach((childSnapshot) => {
                 const tarif = {
@@ -321,22 +308,7 @@ class YemekPlanlamaUygulamasi {
 }
 
 // Uygulamayı başlat
-const uygulama = new YemekPlanlamaUygulamasi();
-
-// Örnek tarif ekleme
-const menemen = new Tarif(
-    1,
-    'Menemen',
-    KATEGORILER.KAHVALTI,
-    'Kolay',
-    20,
-    4.8,
-    true
-);
-
-uygulama.tarifEkle(menemen);
-
-// Event listener'ları ve DOM manipülasyonu burada eklenecek
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM elementlerini seç ve event listener'ları ekle
+    window.uygulama = new YemekPlanlamaUygulamasi();
+    window.uygulama.init();
 });
