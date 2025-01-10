@@ -19,6 +19,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app);
-const analytics = getAnalytics(app);
+
+// Analytics'i yalnızca production ortamında başlat
+const analytics = window.location.hostname !== 'localhost' ? getAnalytics(app) : null;
 
 export { app, database, storage, analytics }; 
